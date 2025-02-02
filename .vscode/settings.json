@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "*.sv": "systemverilog",
+        "calcdis.h": "c"
+    }
+}
