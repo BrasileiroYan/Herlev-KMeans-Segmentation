@@ -4,16 +4,11 @@
 #include <time.h>
 #include "pgmimage.h"
 
-void readPGMImage(struct pgm *pImg, char *fileName);  
-void writePGMImage(struct pgm *pImg, char *fileName);
-void viewPGMImage(struct pgm *pImg);
-void freePGMImage(struct pgm *pImg);
 #define MAX_ITERATIONS 1000
 #define THRESHOLD 0.0001
 
 // Estruturas
 typedef struct {
-    int x, y; // Coordenadas do pixel (se necessário)
     int valor; // Intensidade de pixel (escala de cinza)
 } Pixel;
 
@@ -23,28 +18,28 @@ typedef struct {
 } Cluster;
 
 // Função para calcular a distância euclidiana
-double distancia(Pixel p1, Cluster c) {
-    return fabs(p1.valor - c.valor);
+double distance(Pixel p1, Cluster cluster){
+    return fabs(p1.valor - cluster.valor); // Retorna o módulo da distância 
 }
 
 // Função para inicializar k centróides aleatoriamente
-void inicializarCentroides(Cluster *centroides, int k, int min_val, int max_val) {
+void initializeCentroids(Cluster *centroides, int k, int min_valor, int max_valor) {
     srand(time(NULL)); // Inicializa a semente do random
-    for (int i = 0; i < k; i++) {
-        centroides[i].valor = min_val + rand() % (max_val - min_val + 1);
+    for(int i = 0; i < k; i++){
+        centroides[i].valor = min_valor + rand() % (max_valor - min_valor + 1);
         centroides[i].count = 0;
     }
 }
 
 // Função para atribuir pixels aos centróides
-void atribuirClusters(Pixel *pixels, int n, Cluster *centroides, int k) {
+void assignClusters(Pixel *pixels, int n, Cluster *centroides, int k) {
     for (int i = 0; i < n; i++) {
         double menorDistancia = __DBL_MAX__;
         int clusterIndex = 0;
         for (int j = 0; j < k; j++) {
-            double dist = distancia(pixels[i], centroides[j]);
-            if (dist < menorDistancia) {
-                menorDistancia = dist;
+            double distancia = distance(pixels[i], centroides[j]);
+            if (distancia < menorDistancia) {
+                menorDistancia = distancia;
                 clusterIndex = j;
             }
         }
@@ -55,7 +50,7 @@ void atribuirClusters(Pixel *pixels, int n, Cluster *centroides, int k) {
 }
 
 // Função para atualizar os centróides
-void atualizarCentroides(Cluster *centroides, int k) {
+void updateCentroids(Cluster *centroides, int k) {
     for (int i = 0; i < k; i++) {
         if (centroides[i].count > 0) {
             centroides[i].valor /= centroides[i].count;
@@ -63,23 +58,45 @@ void atualizarCentroides(Cluster *centroides, int k) {
     }
 }
 
+// Função que verifica convergência dos centroides
+int checkConvergence(Cluster *centroides, Cluster *antigoCentroides, int k){
+    for(int i = 0; i<k; i++){
+        if((fabs(centroides[i].valor - antigoCentroides[i].valor)) > THRESHOLD){
+            return 0;
+        }
+
+        return 1;
+    }
+
+}
+
 // Função principal do k-means
-void kMeans(Pixel *pixels, int n, Cluster *centroides, int k, int max_iter) {
-    for (int iter = 0; iter < max_iter; iter++) {
-        // Zera os valores dos centroides antes de reatribuir
+void kMeans(Pixel *pixels, int n, Cluster *centroides, int k) {
+    
+    Cluster antigoCentroides[k];
+
+    for (int iter = 0; iter < MAX_ITERATIONS; iter++) {
+        // Zera os valores dos centróides antes de reatribuir
         for (int i = 0; i < k; i++) {
             centroides[i].valor = 0;
             centroides[i].count = 0;
         }
 
-        // Atribui pixels aos clusters
-        atribuirClusters(pixels, n, centroides, k);
-        
-        // Atualiza os centroides
-        atualizarCentroides(centroides, k);
+        // Armazena o centroide atual em um antigo para comparar nas iterações
+        for(int i = 0; i<k; i++){
+            antigoCentroides[i] = centroides[i];
+        } 
 
-        // Verifica se houve mudança significativa nos centroides
-        // (Pode ser adicionado um critério de convergência)
+        // Atribui pixels aos clusters
+        assignClusters(pixels, n, centroides, k);
+        
+        // Atualiza os centróides
+        updateCentroids(centroides, k);
+
+        if(checkConvergence(centroides, antigoCentroides, k)){
+            puts("Os Centróides convergiram!\n");
+            break;
+        }
     }
 }
 
@@ -95,15 +112,15 @@ int main(int argc, char *argv[]) {
     
     viewPGMImage(&img);
     int k = 3; // Número de clusters
-    int n = 1000; // Número de pixels da imagem (substituir por valor real)
+    int n = img.c * img.r; // Número de pixels da imagem (substituir por valor real)
     Pixel *pixels = (Pixel *)malloc(n * sizeof(Pixel)); // Supondo que você tenha os pixels da imagem
     Cluster *centroides = (Cluster *)malloc(k * sizeof(Cluster));
     
     // Inicializa os centróides aleatoriamente
-    inicializarCentroides(centroides, k, 0, 255);
+    initializeCentroids(centroides, k, 0, 255);
     
     // Rodando o K-means
-    kMeans(pixels, n, centroides, k, MAX_ITERATIONS);
+    kMeans(pixels, n, centroides, k);
 
     // Aqui você pode aplicar os clusters aos pixels e gerar a imagem resultante
     // Salvar a imagem de volta no formato PGM
