@@ -1,3 +1,4 @@
+#include "k-means.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -7,7 +8,7 @@
 #define MAX_ITERATIONS 1000
 #define THRESHOLD 0.0001
 
-// Estruturas
+// Estruturas dos Pixels e Clusters
 typedef struct {
     int valor; // Intensidade de pixel (escala de cinza)
 } Pixel;
@@ -44,8 +45,8 @@ void assignClusters(Pixel *pixels, int n, Cluster *centroides, int k) {
             }
         }
         // Atribui o pixel ao centróide mais próximo
-        centroides[clusterIndex].count++;
         centroides[clusterIndex].valor += pixels[i].valor;
+        centroides[clusterIndex].count++;
     }
 }
 
@@ -64,9 +65,9 @@ int checkConvergence(Cluster *centroides, Cluster *antigoCentroides, int k){
         if((fabs(centroides[i].valor - antigoCentroides[i].valor)) > THRESHOLD){
             return 0;
         }
-
-        return 1;
     }
+
+    return 1;
 
 }
 
@@ -98,35 +99,4 @@ void kMeans(Pixel *pixels, int n, Cluster *centroides, int k) {
             break;
         }
     }
-}
-
-int main(int argc, char *argv[]) {
-    struct pgm img;
-    if(argc != 3){
-        printf("Formato: \n\t %s <imagemEntrada.pgm> <imagemSaida.pgm>\n", argv[0]);
-        exit(1);
-    }
-    readPGMImage(&img, argv[1]);
-    
-    writePGMImage(&img, argv[2]);
-    
-    viewPGMImage(&img);
-    int k = 3; // Número de clusters
-    int n = img.c * img.r; // Número de pixels da imagem (substituir por valor real)
-    Pixel *pixels = (Pixel *)malloc(n * sizeof(Pixel)); // Supondo que você tenha os pixels da imagem
-    Cluster *centroides = (Cluster *)malloc(k * sizeof(Cluster));
-    
-    // Inicializa os centróides aleatoriamente
-    initializeCentroids(centroides, k, 0, 255);
-    
-    // Rodando o K-means
-    kMeans(pixels, n, centroides, k);
-
-    // Aqui você pode aplicar os clusters aos pixels e gerar a imagem resultante
-    // Salvar a imagem de volta no formato PGM
-    printf("K-means finalizado.\n");
-
-    free(pixels);
-    free(centroides);
-    return 0;
 }

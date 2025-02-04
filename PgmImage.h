@@ -1,6 +1,7 @@
 #ifndef PGMIMAGE_H
 #define PGMIMAGE_H
 
+// estrutura pgm
 struct pgm{               // define como a imagem pgm será armazenada
     int tipo;             // tipo de imagem (2 para textual e 5 para binário)
     int c;                // quantidade de colunas
