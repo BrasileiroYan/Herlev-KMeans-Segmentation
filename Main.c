@@ -4,10 +4,12 @@
 #include "pgmimage.h"
 #include "kmeans.h"
 #include "lerdir.h"
+#include "ttime.h"
 
 void clusterizarImagem(const char *imagePath, int k);
 
 int main(int argc, char *argv[]) {
+    
     if (argc != 3) {
         printf("Uso: %s <caminho_do_diretorio> <numero_de_clusters>\n", argv[0]);
         exit(1);
@@ -19,7 +21,11 @@ int main(int argc, char *argv[]) {
         exit(1);
     }
 
+    tempo();
+
     processDirectory(argv[1], k);    
+
+    tempo();
 
     return 0;
 }

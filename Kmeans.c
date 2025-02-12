@@ -8,91 +8,92 @@
 #define MAX_ITERATIONS 1000
 #define THRESHOLD 0.0001
 
-typedef struct{
-    int count;
-    int intensity;
-}Cluster;
-
-// Função principal do K-Means
-void kMeans(PGMImage *image, int k) { 
-    int n = image->c * image->r; // 🔹 Número total de pixels
-    unsigned char *pixels = image->pData; // 🔹 Acessa diretamente os valores dos pixels
-
-    // Aloca dinamicamente os centróides
-    Cluster *centroides = (Cluster *)malloc(k * sizeof(Cluster));
-    Cluster *antigoCentroides = (Cluster *)malloc(k * sizeof(Cluster));
-    if (!centroides || !antigoCentroides) {
+// funçao do K-Means
+void kMeans(PGMImage *pImg, int k){ 
+ 
+    int tamImg = pImg->c * pImg->r; // tamanho da imagem(lin x col) 
+    
+    // aloca memoria  para pixels e os centroides
+    unsigned int *centroides = (unsigned int *)malloc(k * sizeof(unsigned int));
+    unsigned int *antigoCentroides = (unsigned int *)malloc(k * sizeof(unsigned int));
+ 
+    //verifica se a alocaçao funcionou
+    if(!(centroides) || !(antigoCentroides)){
         perror("Erro ao alocar memoria para os centroides.");
-        exit(1);
+        exit(2);
     }
 
-    srand(time(NULL)); // 🔹 Inicializa a semente do random
-
-    // Determina os valores mínimo e máximo dos pixels
-    int min_valor = 255, max_valor = 0;
-    for (int i = 0; i < n; i++) {
-        if (pixels[i] < min_valor) min_valor = pixels[i];
-        if (pixels[i] > max_valor) max_valor = pixels[i];
+    srand(time(NULL)); // define a semente randomica
+    
+    // inicia os centroides aleatoriamente
+    int valorK[k]; // um vetor que armazena os valores de cada k 
+    for(int i=0; i<k; i++){
+        valorK[i] = pImg->pData[rand() % tamImg]; // cada posiçao do vetor recebe um valor aleatorio da matriz da imagem 
+        centroides[i] = valorK[i]; // cada centroide recebe o valor correspondente 
     }
 
-    // Inicializa k centróides aleatoriamente no intervalo [min, max]
-    for (int i = 0; i < k; i++) {
-        centroides[i].intensity = min_valor + rand() % (max_valor - min_valor + 1);
-        centroides[i].count = 0;
-    }
-
-    for (int iter = 0; iter < MAX_ITERATIONS; iter++) {
-        // Salva os valores antigos para verificar a convergência
-        for (int i = 0; i < k; i++) {
+    for(int iter=0; iter<MAX_ITERATIONS; iter++){
+        // salva os valores antigos para verificar a convergencia posteriormente
+        for (int i=0; i<k; i++){
             antigoCentroides[i] = centroides[i];
-            centroides[i].intensity = 0;
-            centroides[i].count = 0;
         }
 
+        // define e inicializa variaveis de somatorio e contagem para cada centroide
+        unsigned long somatorioCentroides[k];
+        unsigned int contCentroides[k];
+
+        for(int i=0; i<k; i++){
+            somatorioCentroides[i] = 0;
+            contCentroides[i] = 0;
+        }
+        
         // Atribui cada pixel ao centróide mais próximo
-        for (int i = 0; i < n; i++) {
-            double menorDistancia = INFINITY;
+        for(int i=0; i<tamImg; i++){
+            unsigned int menorDistancia = abs(pImg->pData[i] - centroides[0]);
             int clusterIndex = 0;
             
-            for (int j = 0; j < k; j++) {
-                double distancia = fabs(pixels[i] - centroides[j].intensity);
-                if (distancia < menorDistancia) {
+            for(int j=0; j<k; j++){
+                unsigned int distancia = abs(pImg->pData[i] - centroides[j]);
+                if(distancia < menorDistancia){
                     menorDistancia = distancia;
                     clusterIndex = j;
                 }
             }
 
-            // Atualiza a soma e a contagem para o cálculo da média
-            centroides[clusterIndex].intensity += pixels[i];
-            centroides[clusterIndex].count++;
+            // calcula o somatorio de pixels e atualiza a contagem de cada centroide
+            somatorioCentroides[clusterIndex] += pImg->pData[i];
+            contCentroides[clusterIndex]++;
 
-            // Atualiza o valor do pixel para o valor do centróide do cluster
-            pixels[i] = centroides[clusterIndex].intensity;
+            // atualiza o valor do pixel para o valor do centroide do cluster
+            pImg->pData[i] = centroides[clusterIndex];
         }
 
-        // Atualiza os centróides com a média dos valores atribuídos
-        for (int i = 0; i < k; i++) {
-            if (centroides[i].count > 0) {
-                centroides[i].intensity /= centroides[i].count;
+        // atualiza os centroides para a media dos pixels atribuidos
+        for(int i=0; i<k; i++){
+            if(contCentroides[i]>0){
+                centroides[i] = somatorioCentroides[i] / contCentroides[i];
             }
         }
 
-        // Verifica se os centróides convergiram
-        int convergiu = 1;
-        for (int i = 0; i < k; i++) {
-            if (fabs(centroides[i].intensity - antigoCentroides[i].intensity) > THRESHOLD) {
-                convergiu = 0;
-                break;
+        // verifica a variacao dos centroides
+        double maiorVariacao = 0;
+        for(int i=0; i<k; i++){
+            double variacao = fabs((double)centroides[i] - antigoCentroides[i]);
+
+            if(variacao > maiorVariacao){
+                maiorVariacao = variacao;
             }
         }
-        
-        if (convergiu) {
-            puts("Os Centroides convergiram!\n");
+
+        // se a varicao for um valor infimo, mostra mensagem ao usuario e finaliza o laco de iteracao
+        if(maiorVariacao < THRESHOLD){
+            printf("Centroides convergiram com %d iteracoes!\n", iter+1);
+            fflush(stdout);
             break;
         }
     }
 
-    // Libera memória alocada dinamicamente
+    // libera memoria alocada dinamicamente
     free(centroides);
     free(antigoCentroides);
 }
