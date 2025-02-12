@@ -1,22 +1,23 @@
-all: main
+all: main  
 
-main: Main.o Histogram.o Kmeans.o LerDir.o PgmImage.o
-	gcc -o main Main.o Histogram.o Kmeans.o LerDir.o PgmImage.o
+main: output/Main.o output/Kmeans.o output/LerDir.o output/PgmImage.o output/ttime.o
+	gcc -o bin/Main.exe output/Main.o output/Kmeans.o output/LerDir.o output/PgmImage.o output/ttime.o
 
-Main.o: Main.c Histogram.h Kmeans.h PgmImage.h
-	gcc -c Main.c
+output/Main.o: src/Main.c include/Kmeans.h include/PgmImage.h include/ttime.h
+	gcc -c src/Main.c -o output/Main.o -Iinclude
 
-Histogram.o: Histogram.c Histogram.h 
-	gcc -c Histogram.c
+output/Kmeans.o: src/Kmeans.c include/Kmeans.h include/PgmImage.h
+	gcc -c src/Kmeans.c -o output/Kmeans.o -Iinclude
 
-Kmeans.o: Kmeans.c Kmeans.h PgmImage.h
-	gcc -c Kmeans.c
+output/LerDir.o: src/LerDir.c include/LerDir.h
+	gcc -c src/LerDir.c -o output/LerDir.o -Iinclude
 
-LerDir.o: LerDir.c LerDir.h
-	gcc -c LerDir.c
+output/PgmImage.o: src/PgmImage.c include/PgmImage.h
+	gcc -c src/PgmImage.c -o output/PgmImage.o -Iinclude
 
-PgmImage.o: PgmImage.c PgmImage.h
-	gcc -c PgmImage.c
+output/ttime.o: src/ttime.c include/ttime.h
+	gcc -c src/ttime.c -o output/ttime.o -Iinclude
 
-clean: 
-	rm -rf *.o main
+clean:
+	rm -rf output/*.o bin/Main.exe
+
