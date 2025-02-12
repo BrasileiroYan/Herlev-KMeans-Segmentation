@@ -1,4 +1,4 @@
-# Cervical Cell Image Segmentation with K-Means 🎯
+[# Cervical Cell Image Segmentation with K-Means 🎯
 
 ## 🚀 Description
 
@@ -12,7 +12,7 @@ This project implements the **K-Means** algorithm for **PGM** image segmentation
 
 ```
 Herlev-KMeans-Segmentation/
-├── bin/                  # Directory containing the final executable (Main.exe)
+├── images/               # Directory containing PGM images for segmentation├── bin/                  # Directory containing the final executable (Main.exe)
 ├── include/              # Header files (.h) defining functions and structures
 │   ├── Kmeans.h
 │   ├── LerDir.h
@@ -88,3 +88,4 @@ mingw32-make clean
 - **Eduardo Parente Lima** ([duduxl91](https://github.com/duduxl91))
 - **Italo Beserra de Oliveira** ([italobeserra](https://github.com/italobeserra))
 
+](url)
