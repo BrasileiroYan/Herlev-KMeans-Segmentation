@@ -1,4 +1,4 @@
-[# Cervical Cell Image Segmentation with K-Means 🎯
+# Cervical Cell Image Segmentation with K-Means 🎯
 
 ## 🚀 Description
 
