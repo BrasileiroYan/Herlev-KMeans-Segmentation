@@ -1,34 +1,27 @@
+#include "lerdir.h"
+#include "kmeans.h"
+#include "pgmimage.h"
 #include <dirent.h>
 #include <stdio.h>
- 
-int main(void)
-{
-    // Inicio da medição do tempo
-    DIR *d;
-    struct dirent *dir;
-    d = opendir("./images");
-    if (d)
-    {
-        while ((dir = readdir(d)) != NULL)
-        {
-            
+#include <stdlib.h>
 
-
-            printf("%s\n", dir->d_name);
-
-
-						// Leitura da Imagem -PGM
-
-
-						
-						
-						// Saída.
-
-
-             
-        }
-        closedir(d);
+void processDirectory(const char *directoryPath, int k){
+    DIR *dir = opendir(directoryPath);
+    if (dir == NULL) {
+        perror("Erro ao abrir o diretorio");
+        exit(1);
     }
-    // Fim da medição do tempo           
-    return(0);
+
+    struct dirent *entry;
+    while ((entry = readdir(dir)) != NULL) {
+        if (entry->d_type == DT_REG) {  // Verifica se é um arquivo regular
+            // Formata o caminho completo do arquivo
+            char fullPath[1024];
+            snprintf(fullPath, sizeof(fullPath), "%s/%s", directoryPath, entry->d_name);
+            printf("Processando arquivo: %s\n", fullPath);
+            clusterizarImagem(fullPath, k);  // Passa o caminho completo do arquivo
+        }
+    }
+
+    closedir(dir);
 }

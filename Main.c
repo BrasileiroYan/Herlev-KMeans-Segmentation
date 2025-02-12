@@ -1,56 +1,50 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "pgmimage.h"
-#include "k-means.h"
+#include "kmeans.h"
+#include "lerdir.h"
+
+void clusterizarImagem(const char *imagePath, int k);
 
 int main(int argc, char *argv[]) {
-    
-    struct pgm img;
-    
-    if(argc != 3){
-        printf("Formato: \n\t %s <imagemEntrada.pgm> <imagemSaida.pgm>\n", argv[0]);
+    if (argc != 3) {
+        printf("Uso: %s <caminho_do_diretorio> <numero_de_clusters>\n", argv[0]);
         exit(1);
     }
-    
-    readPGMImage(&img, argv[1]);
-    
-    writePGMImage(&img, argv[2]);
-    
-    viewPGMImage(&img);
 
-    freePGMImage(&img);
-    
-    int k = 3; // Número de clusters
-    int n = img.c * img.r; // Número de pixels da imagem
-    
-    Pixel *pixels = (Pixel *)malloc(n * sizeof(Pixel));
-    if(pixels == NULL){
-        puts("Erro em alocação de memória.");
-        exit(2);
+    int k = atoi(argv[2]);
+    if(k <= 0){
+        printf("Erro: numero de clusters deve ser maior que zero!");
+        exit(1);
     }
 
-    Cluster *centroides = (Cluster *)malloc(k * sizeof(Cluster));
-    if(centroides == NULL){
-        puts("Erro em alocação de memória.");
-        exit(3);
-    }    
-    
-    // Atribui cada valor da matriz da imagem ao respectivo array pixels
-    for(int i = 0; i<n; i++){
-        pixels[i].valor = img.pData[i]; 
-    }
+    processDirectory(argv[1], k);    
 
-    // Inicializa os centróides aleatoriamente
-    initializeCentroids(centroides, k, 0, 255);
-    
-    // Rodando o K-means
-    kMeans(pixels, n, centroides, k);
-
-    // Aqui você pode aplicar os clusters aos pixels e gerar a imagem resultante
-    // Salvar a imagem de volta no formato PGM
-    printf("K-means finalizado.\n");
-
-    free(pixels);
-    free(centroides);
     return 0;
+}
+
+void clusterizarImagem(const char *imagePath, int k){
+    
+    PGMImage img;
+
+    // Ler imagem PGM
+    readPGMImage(&img, imagePath);
+
+    // Aplicar K-Means
+    kMeans(&img, k);
+
+    char outputPath[1024];
+    strcpy(outputPath, imagePath);
+    char *ext = strrchr(outputPath, '.'); // Encontra a extensão do arquivo
+    if (ext) {
+        *ext = '\0'; // Remove a extensão
+    }
+    sprintf(outputPath, "%s_k%d.pgm", outputPath, k); // Adiciona sufixo com o número de clusters
+
+    // Salvar imagem segmentada
+    writePGMImage(&img, outputPath);
+
+    // Liberar memória
+    freePGMImage(&img);
 }
