@@ -1,90 +1,88 @@
-# Segmentação de Imagens de Células Cervicais com K-Means 🎯
+# Cervical Cell Image Segmentation with K-Means 🎯
 
-## 🚀 Descrição
+## 🚀 Description
 
-Este projeto foi desenvolvido na linguagem **C**, estruturado de forma modular para facilitar a manutenção e a expansão. O código é organizado em diferentes diretórios, separando arquivos de cabeçalho, implementações e resultados da execução, garantindo maior clareza e eficiência no desenvolvimento.
+This project was developed in the **C** programming language, structured in a modular way to facilitate maintenance and expansion. The code is organized into different directories, separating header files, implementations, and execution results, ensuring greater clarity and efficiency in development.
 
-
-
-Este projeto implementa o algoritmo de **K-Means** para segmentação de imagens no formato **PGM**, utilizando o conjunto de dados **Herlev**. Este dataset contém imagens de células cervicais provenientes de exames de Papanicolaou e está disponível para download em: [Herlev Dataset](https://mde-lab.aegean.gr/index.php/downloads/). A segmentação dessas imagens auxilia na análise citológica e identificação de padrões para estudos médicos.
+This project implements the **K-Means** algorithm for **PGM** image segmentation using the **Herlev** dataset. This dataset contains images of cervical cells from Pap smear tests and is available for download at: [Herlev Dataset](https://mde-lab.aegean.gr/index.php/downloads/). The segmentation of these images aids in cytological analysis and pattern identification for medical studies.
 
 ---
 
-## 📂 Estrutura do Projeto  
+## 📂 Project Structure  
 
 ```
-Projeto-Final-C/
-├── bin/                  # Diretório contendo o executável final (Main.exe)
-├── include/              # Arquivos de cabeçalho (.h), responsáveis pelas definições de funções e estruturas
+Herlev-KMeans-Segmentation/
+├── bin/                  # Directory containing the final executable (Main.exe)
+├── include/              # Header files (.h) defining functions and structures
 │   ├── Kmeans.h
 │   ├── LerDir.h
 │   ├── PgmImage.h
 │   ├── ttime.h
-├── output/               # Arquivos objeto (.o) gerados durante a compilação
-├── scripts/              # Scripts auxiliares para análise e pós-processamento
+├── output/               # Object files (.o) generated during compilation
+├── scripts/              # Auxiliary scripts for analysis and post-processing
 │   ├── histograma.py
-├── src/                  # Implementação principal do código-fonte (.c)
+├── src/                  # Main source code implementation (.c)
 │   ├── Kmeans.c
 │   ├── LerDir.c
 │   ├── Main.c
 │   ├── PgmImage.c
 │   ├── ttime.c
-├── Makefile              # Arquivo de build para automação da compilação
-└── README.md             # Documentação do projeto
+├── Makefile              # Build file for automated compilation
+└── README.md             # Project documentation
 ```
 
 ---
 
-## 🛠️ Como Compilar e Executar
+## 🛠️ How to Compile and Run
 
-### 🔹 Compilar o projeto
-Para compilar o código, execute o seguinte comando no terminal a partir do diretório raiz:
+### 🔹 Compile the project
+To compile the code, run the following command in the terminal from the root directory:
 
 ```sh
 mingw32-make
 ```
 
-Este comando irá compilar os arquivos `.c` em objetos `.o`, armazenando-os na pasta `output/`, e gerar o executável `Main.exe` na pasta `bin/`.
+This command compiles the `.c` files into `.o` objects, storing them in the `output/` folder, and generates the `Main.exe` executable in the `bin/` folder.
 
 ---
 
-### 🔹 Executar o programa
-Após a compilação, o programa pode ser executado com o seguinte comando, passando como argumento o diretório das imagens e o número desejado de clusters:
+### 🔹 Run the program
+After compilation, the program can be executed with the following command, passing the image directory and the desired number of clusters as arguments:
 
 ```sh
-bin/Main.exe "C:\Users\Dell\OneDrive\Área de Trabalho\Projeto-Final-C\images" 4
+bin/Main.exe "C:\Users\Dell\OneDrive\Desktop\Herlev-KMeans-Segmentation\images" 4
 ```
 
-O primeiro argumento especifica a pasta contendo as imagens a serem processadas, enquanto o segundo define o número de clusters para a segmentação.
+The first argument specifies the folder containing the images to be processed, while the second defines the number of clusters for segmentation.
 
 ---
 
-### 🔹 Limpar os arquivos compilados
-Para remover os arquivos objeto (`.o`) e o executável gerado, utilize:
+### 🔹 Clean compiled files
+To remove object files (`.o`) and the generated executable, use:
 
 ```sh
 mingw32-make clean
 ```
 
-ℹ️ **Nota:** Esse comando deve ser executado no **Git Bash**, pois o `rm -rf` não é suportado pelo CMD do Windows.
+ℹ️ **Note:** This command should be executed in **Git Bash**, as `rm -rf` is not supported in Windows CMD.
 
 ---
 
-## 📜 Funcionamento do Código
-- O programa recebe um diretório contendo imagens no formato **PGM** e um valor `k`, que define a quantidade de clusters.
-- Ele **lê e processa as imagens**, aplicando o algoritmo **K-Means** para segmentação baseada em padrões de intensidade.
-- Os resultados podem ser analisados por meio do **script `histograma.py`**, que permite uma visualização gráfica da distribuição dos clusters.
+## 📜 Code Functionality
+- The program receives a directory containing images in **PGM** format and a value `k`, which defines the number of clusters.
+- It **reads and processes the images**, applying the **K-Means** algorithm for segmentation based on intensity patterns.
+- The results can be analyzed using the **`histograma.py` script**, which provides a graphical visualization of the cluster distribution.
 
 ---
 
-## 🔧 Dependências
-- **GCC (GNU Compiler Collection)** – Requerido para compilar o código C (MinGW no Windows ou GCC no Linux)
-- **Make** – Necessário para executar os comandos de compilação automatizada (`mingw32-make` no Windows)
-- **Python** – Utilizado para execução de scripts auxiliares, como o `histograma.py`
+## 🔧 Dependencies
+- **GCC (GNU Compiler Collection)** – Required to compile the C code (MinGW for Windows or GCC for Linux)
+- **Make** – Necessary to run automated compilation commands (`mingw32-make` on Windows)
+- **Python** – Used for running auxiliary scripts, such as `histograma.py`
 
 ---
 
-## 📝 Autores
+## 📝 Authors
 - **Yan Pedro Façanha Brasileiro** ([BrasileiroYan](https://github.com/BrasileiroYan))
 - **Ricardo Magalhães Parente Frota** ([Ricardo-Parente](https://github.com/Ricardo-Parente))
 - **Eduardo Parente Lima** ([duduxl91](https://github.com/duduxl91))
