@@ -56,5 +56,5 @@ def visualizar_histogramas(caminho_diretorio):
 
 # Exemplo de uso:
 if __name__ == "__main__":
-    caminho_diretorio = "Imagens"
+    caminho_diretorio = "images"
     visualizar_histogramas(caminho_diretorio)
