@@ -34,23 +34,23 @@ void clusterizarImagem(const char *imagePath, int k){
     
     PGMImage img;
 
-    // Ler imagem PGM
+    // Le a imagem PGM
     readPGMImage(&img, imagePath);
 
-    // Aplicar K-Means
+    // Aplica o K-Means
     kMeans(&img, k);
 
     char outputPath[1024];
     strcpy(outputPath, imagePath);
-    char *ext = strrchr(outputPath, '.'); // Encontra a extensão do arquivo
+    char *ext = strrchr(outputPath, '.'); // Encontra a extensao do arquivo (.pgm)
     if (ext) {
-        *ext = '\0'; // Remove a extensão
+        *ext = '\0'; // Remove a extensao
     }
-    sprintf(outputPath, "%s_k%d.pgm", outputPath, k); // Adiciona sufixo com o número de clusters
+    sprintf(outputPath, "%s_k%d.pgm", outputPath, k); // Adiciona sufixo com o numero de clusters
 
-    // Salvar imagem segmentada
+    // Salva a imagem segmentada
     writePGMImage(&img, outputPath);
 
-    // Liberar memória
+    // Libera a memoria alocada
     freePGMImage(&img);
 }

@@ -8,37 +8,37 @@
 #define MAX_ITERATIONS 1000
 #define THRESHOLD 0.0001
 
-// funçao do K-Means
+// Funçao do K-Means
 void kMeans(PGMImage *pImg, int k){ 
  
-    int tamImg = pImg->c * pImg->r; // tamanho da imagem(lin x col) 
+    int tamImg = pImg->c * pImg->r; // Tamanho da imagem(lin x col) 
     
-    // aloca memoria  para pixels e os centroides
+    // Aloca memoria  para pixels e os centroides
     unsigned int *centroides = (unsigned int *)malloc(k * sizeof(unsigned int));
     unsigned int *antigoCentroides = (unsigned int *)malloc(k * sizeof(unsigned int));
  
-    //verifica se a alocaçao funcionou
+    // Verifica se a alocaçao funcionou
     if(!(centroides) || !(antigoCentroides)){
         perror("Erro ao alocar memoria para os centroides.");
         exit(2);
     }
 
-    srand(time(NULL)); // define a semente randomica
+    srand(time(NULL)); // Define a semente randomica
     
-    // inicia os centroides aleatoriamente
-    int valorK[k]; // um vetor que armazena os valores de cada k 
+    // Inicia os centroides aleatoriamente
+    int valorK[k]; // Um vetor que armazena os valores de cada k 
     for(int i=0; i<k; i++){
-        valorK[i] = pImg->pData[rand() % tamImg]; // cada posiçao do vetor recebe um valor aleatorio da matriz da imagem 
-        centroides[i] = valorK[i]; // cada centroide recebe o valor correspondente 
+        valorK[i] = pImg->pData[rand() % tamImg]; // Cada posiçao do vetor recebe um valor aleatorio da matriz da imagem 
+        centroides[i] = valorK[i]; // Cada centroide recebe o valor correspondente 
     }
 
     for(int iter=0; iter<MAX_ITERATIONS; iter++){
-        // salva os valores antigos para verificar a convergencia posteriormente
+        // Salva os valores antigos para verificar a convergencia posteriormente
         for (int i=0; i<k; i++){
             antigoCentroides[i] = centroides[i];
         }
 
-        // define e inicializa variaveis de somatorio e contagem para cada centroide
+        // Define e inicializa variaveis de somatorio e contagem para cada centroide
         unsigned long somatorioCentroides[k];
         unsigned int contCentroides[k];
 
@@ -47,35 +47,35 @@ void kMeans(PGMImage *pImg, int k){
             contCentroides[i] = 0;
         }
         
-        // Atribui cada pixel ao centróide mais próximo
+        // Atribui cada pixel ao centroide mais proximo
         for(int i=0; i<tamImg; i++){
             unsigned int menorDistancia = abs(pImg->pData[i] - centroides[0]);
-            int clusterIndex = 0;
+            int centroideIndice = 0;
             
             for(int j=0; j<k; j++){
                 unsigned int distancia = abs(pImg->pData[i] - centroides[j]);
                 if(distancia < menorDistancia){
                     menorDistancia = distancia;
-                    clusterIndex = j;
+                    centroideIndice = j;
                 }
             }
 
-            // calcula o somatorio de pixels e atualiza a contagem de cada centroide
-            somatorioCentroides[clusterIndex] += pImg->pData[i];
-            contCentroides[clusterIndex]++;
+            // Calcula o somatorio de pixels e atualiza a contagem de cada centroide
+            somatorioCentroides[centroideIndice] += pImg->pData[i];
+            contCentroides[centroideIndice]++;
 
-            // atualiza o valor do pixel para o valor do centroide do cluster
-            pImg->pData[i] = centroides[clusterIndex];
+            // Atualiza o valor do pixel para o valor do centroide do cluster
+            pImg->pData[i] = centroides[centroideIndice];
         }
 
-        // atualiza os centroides para a media dos pixels atribuidos
+        // Atualiza os centroides para a media dos pixels atribuidos
         for(int i=0; i<k; i++){
             if(contCentroides[i]>0){
                 centroides[i] = somatorioCentroides[i] / contCentroides[i];
             }
         }
 
-        // verifica a variacao dos centroides
+        // Verifica a variacao dos centroides
         double maiorVariacao = 0;
         for(int i=0; i<k; i++){
             double variacao = fabs((double)centroides[i] - antigoCentroides[i]);
@@ -85,7 +85,7 @@ void kMeans(PGMImage *pImg, int k){
             }
         }
 
-        // se a varicao for um valor infimo, mostra mensagem ao usuario e finaliza o laco de iteracao
+        // Se a varicao for um valor infimo, mostra mensagem ao usuario e finaliza o laco de iteracao
         if(maiorVariacao < THRESHOLD){
             printf("Centroides convergiram com %d iteracoes!\n", iter+1);
             fflush(stdout);
@@ -93,7 +93,7 @@ void kMeans(PGMImage *pImg, int k){
         }
     }
 
-    // libera memoria alocada dinamicamente
+    // Libera memoria alocada dinamicamente
     free(centroides);
     free(antigoCentroides);
 }

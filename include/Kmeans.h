@@ -3,8 +3,7 @@
 
 #include "pgmimage.h"
 
-// define um tipo para variavel Cluster
-
+// Declara a funcao 
 void kMeans(PGMImage *pImg, int k);
 
 #endif

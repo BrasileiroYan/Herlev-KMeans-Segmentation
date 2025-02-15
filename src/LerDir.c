@@ -14,7 +14,7 @@ void processDirectory(const char *directoryPath, int k){
 
     struct dirent *entry;
     while ((entry = readdir(dir)) != NULL) {
-        if (entry->d_type == DT_REG) {  // Verifica se é um arquivo regular
+        if (entry->d_type == DT_REG) {  // Verifica se e um arquivo regular
             // Formata o caminho completo do arquivo
             char fullPath[1024];
             snprintf(fullPath, sizeof(fullPath), "%s/%s", directoryPath, entry->d_name);

@@ -13,43 +13,43 @@ void readPGMImage(PGMImage *pImg, const char *fileName) {
         exit(1);
     }
 
-    // Verifica se o arquivo é do tipo PGM (deve começar com "P")
+    // Verifica se o arquivo e do tipo PGM (deve começar com "P")
     if ((ch = getc(fp)) != 'P') {
         puts("O arquivo nao e uma imagem PGM valida.");
         exit(2);
     }
 
-    // Obtém o tipo de PGM (P2 = texto, P5 = binário)
+    // Obtem o tipo de PGM (P2 = texto, P5 = binario)
     pImg->tipo = getc(fp) - 48;
-    fseek(fp, 1, SEEK_CUR); // Avança para a próxima linha
+    fseek(fp, 1, SEEK_CUR); // Avança para a proxima linha
 
-    // Ignora comentários (linhas que começam com '#')
+    // Ignora comentarios (linhas que começam com '#')
     while ((ch = getc(fp)) == '#') {
         while (getc(fp) != '\n');
     }
-    fseek(fp, -1, SEEK_CUR); // Retorna um caractere para trás
+    fseek(fp, -1, SEEK_CUR); // Retorna um caractere para tras
 
-    // Lê as dimensões da imagem (largura x altura)
+    // Le as dimensoes da imagem (largura x altura)
     if (fscanf(fp, "%d %d", &pImg->c, &pImg->r) != 2) {
         puts("Erro ao ler as dimensoes da imagem.");
         exit(3);
     }
 
-    // Lê o valor máximo dos pixels (geralmente 255)
+    // Le o valor maximo dos pixels (geralmente 255)
     if (fscanf(fp, "%d", &pImg->mv) != 1) {
         puts("Erro ao ler o valor maximo da imagem.");
         exit(4);
     }
-    fseek(fp, 1, SEEK_CUR); // Avança para a próxima linha
+    fseek(fp, 1, SEEK_CUR); // Avança para a proxima linha
 
-    // Aloca memória para os pixels da imagem
+    // Aloca memoria para os pixels da imagem
     pImg->pData = (unsigned char *)malloc(pImg->c * pImg->r * sizeof(unsigned char));
     if (!pImg->pData) {
         perror("Erro ao alocar memoria.");
         exit(5);
     }
 
-    // Lê os pixels da imagem com base no tipo PGM
+    // Le os pixels da imagem com base no tipo PGM
     switch (pImg->tipo) {
         case 2: // PGM em formato texto
             puts("Lendo imagem PGM (formato texto, P2).");
@@ -67,10 +67,10 @@ void readPGMImage(PGMImage *pImg, const char *fileName) {
             exit(6);
     }
 
-    fclose(fp); // Fecha o arquivo após a leitura
+    fclose(fp); // Fecha o arquivo apos a leitura
 }
 
-// Função para salvar uma imagem PGM em arquivo
+// Funçao para salvar uma imagem PGM em arquivo
 void writePGMImage(PGMImage *pImg, const char *fileName) {
     FILE *fp;
 
@@ -88,10 +88,10 @@ void writePGMImage(PGMImage *pImg, const char *fileName) {
     // Escreve os pixels da imagem no arquivo
     fwrite(pImg->pData, sizeof(unsigned char), pImg->c * pImg->r, fp);
 
-    fclose(fp); // Fecha o arquivo após a escrita
+    fclose(fp); // Fecha o arquivo apos a escrita
 }
 
-// Função para exibir informações sobre a imagem PGM no terminal
+// Funçao para exibir informaçoes sobre a imagem PGM no terminal
 void viewPGMImage(PGMImage *pImg) {
     printf("Tipo: P%d\n", pImg->tipo);
     printf("Dimensoes: %d x %d\n", pImg->c, pImg->r);
@@ -106,7 +106,7 @@ void viewPGMImage(PGMImage *pImg) {
     }
 }
 
-// Função para liberar a memória alocada para a imagem
+// Funçao para liberar a memoria alocada para a imagem
 void freePGMImage(PGMImage *pImg) {
     free(pImg->pData);
     pImg->pData = NULL; // Deixa o ponteiro nulo, evitando comportamento indesejado
