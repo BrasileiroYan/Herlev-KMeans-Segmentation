@@ -26,7 +26,7 @@ class HistogramaViewer:
         histograma, nome_imagem = self.calcular_histograma(caminho_imagem)
 
         if histograma is not None:
-            self.ax.plot(histograma, color='black')
+            self.ax.plot(histograma, color='blue')
             self.ax.set_title(f"Histograma: {nome_imagem}", fontsize=12)
             self.ax.set_xlabel("Intensidade dos Pixels")
             self.ax.set_ylabel("Frequência")
