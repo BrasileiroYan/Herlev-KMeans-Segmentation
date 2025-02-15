@@ -20,7 +20,7 @@ void readPGMImage(PGMImage *pImg, const char *fileName) {
     }
 
     // Obtém o tipo de PGM (P2 = texto, P5 = binário)
-    pImg->tipo = getc(fp) - '0';
+    pImg->tipo = getc(fp) - 48;
     fseek(fp, 1, SEEK_CUR); // Avança para a próxima linha
 
     // Ignora comentários (linhas que começam com '#')
