@@ -20,7 +20,7 @@ void kMeans(PGMImage *pImg, int k){
     // Verifica se a alocaçao funcionou
     if(!(centroides) || !(antigoCentroides)){
         perror("Erro ao alocar memoria para os centroides.");
-        exit(2);
+        exit(1);
     }
 
     srand(time(NULL)); // Define a semente randomica
