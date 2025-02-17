@@ -6,7 +6,7 @@
 #include <time.h>
 
 #define MAX_ITERATIONS 1000
-#define THRESHOLD 0.0001
+#define THRESHOLD 2
 
 // Funçao do K-Means
 void kMeans(PGMImage *pImg, int k){ 
@@ -14,8 +14,8 @@ void kMeans(PGMImage *pImg, int k){
     int tamImg = pImg->c * pImg->r; // Tamanho da imagem(lin x col) 
     
     // Aloca memoria  para pixels e os centroides
-    unsigned int *centroides = (unsigned int *)malloc(k * sizeof(unsigned int));
-    unsigned int *antigoCentroides = (unsigned int *)malloc(k * sizeof(unsigned int));
+    unsigned *centroides = (unsigned int *)malloc(k * sizeof(unsigned int));
+    unsigned *antigoCentroides = (unsigned int *)malloc(k * sizeof(unsigned int));
  
     // Verifica se a alocaçao funcionou
     if(!(centroides) || !(antigoCentroides)){
@@ -76,9 +76,9 @@ void kMeans(PGMImage *pImg, int k){
         }
 
         // Verifica a variacao dos centroides
-        double maiorVariacao = 0;
+        unsigned maiorVariacao = 0;
         for(int i=0; i<k; i++){
-            double variacao = fabs((double)centroides[i] - antigoCentroides[i]);
+            unsigned variacao = abs(centroides[i] - antigoCentroides[i]);
 
             if(variacao > maiorVariacao){
                 maiorVariacao = variacao;
